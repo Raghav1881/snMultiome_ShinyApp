@@ -2,35 +2,64 @@ library(shiny)
 library(Seurat)
 library(ggplot2)
 library(uwot)
+library(plotly)
 
 gene_list <- rownames(x = pbmc_tutorial)
-# Define UI for application that draws a histogram
-ui <- fluidPage(
-  headerPanel("Seurat Gene Selectornator"),
-  sidebarPanel(
-    selectInput("geneid", "Gene:", choices = gene_list)
-  ),
-  mainPanel(
-    tabsetPanel(
-      tabPanel("UMAP Plot", plotOutput("umap_graph")),
-      tabPanel("Violin Plot", plotOutput("vln_plot")),
-      tabPanel("Feature Plot", plotOutput("ftr_plot"))
-    ))
-    
-)
 
-# Define server logic required to draw a histogram
+ui <- fluidPage(
+  titlePanel("Seurat Gene Selectornator"),
+  navbarPage(NULL,
+    tabPanel("UMAP Plot", 
+      column(3,
+        selectInput("geneid", "Gene:", choices = gene_list)
+      ), 
+      column(9,
+        plotOutput("umap_graph"))
+      ),
+    tabPanel("Violin Plot", 
+      column(3,
+        selectInput("geneid", "Gene:", choices = gene_list)
+      ), 
+      column(9,
+        plotOutput("vln_plot"))
+      ),
+    tabPanel("Feature Plot",
+      column(3,
+        selectInput("geneid", "Gene:", choices = gene_list)
+      ), 
+      column(9,
+        plotOutput("ftr_plot"))),
+    tabPanel("Coexpression Plot", 
+      fluidRow(
+        plotOutput("coexpress_plot")
+      ),
+      fluidRow(
+        selectInput("gene1", "Gene 1:", choices = gene_list), 
+        selectInput("gene2", "Gene 2:", choices = gene_list) 
+      )
+    )
+  ))
+
 server <- function(input, output) {
   output$umap_graph <- renderPlot({
-    UMAPPlot(pbmc_tutorial)
+    plot <- FeaturePlot(pbmc_tutorial, features = input$geneid)
+    HoverLocator(plot = plot, 
+                 information = FetchData(pbmc_tutorial, 
+                                         vars = c("ident", "PC_1", "nFeature_RNA")))
   })
   
   output$vln_plot <- renderPlot({
-    VlnPlot(pbmc_tutorial, features = input$geneid)
+    VlnPlot(pbmc_tutorial, features = input$geneid, pt.size = 0)
   })
   
   output$ftr_plot <- renderPlot({
-    FeaturePlot(pbmc_tutorial, features = input$geneid)
+    plot <- FeaturePlot(pbmc_tutorial, features = input$geneid)
+    LabelClusters(plot = plot, id = "ident")
+  })
+  
+  output$coexpress_plot <- renderPlot({
+    FeaturePlot(pbmc_tutorial, features = c(input$gene1, input$gene2), 
+                blend = TRUE)
   })
 }
 
