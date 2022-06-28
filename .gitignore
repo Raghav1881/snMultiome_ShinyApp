@@ -1,0 +1,12 @@
+
+output/shinyApp/ui.R
+output/shinyApp/server.R
+output/shinyApp/sc1meta.rds
+output/shinyApp/sc1gexpr.h5
+output/shinyApp/sc1gene.rds
+output/shinyApp/sc1def.rds
+output/shinyApp/sc1conf.rds
+*.rds
+output/pbmc_tutorial
+ShinyApp/app.R
+ShinyApp/app.R
