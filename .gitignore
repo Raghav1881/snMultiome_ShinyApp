@@ -10,3 +10,4 @@ output/shinyApp/sc1conf.rds
 output/pbmc_tutorial
 ShinyApp/app.R
 ShinyApp/app.R
+RNA-seq-app/30k_snRNA.RDS
