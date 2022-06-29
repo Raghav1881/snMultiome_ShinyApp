@@ -3,7 +3,6 @@ library(Seurat)
 library(ggplot2)
 library(uwot)
 library(plotly)
-dataset <- readRDS("30k_snRNA.RDS")
 
 server <- function(input, output) {
     if ((length(observe(input$feats))) > 1) {
