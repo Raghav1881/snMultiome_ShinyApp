@@ -9,7 +9,7 @@ server <- function(input, output) {
   # Generate output for features plots
   output$features_graph <- renderPlot({
     VlnPlot(dataset, features = input$feats,
-            pt.size = 0, ncol = length(input$feats)) +
+            pt.size = 0, ncol = 3) &
         theme(axis.title.x = element_blank())
   })
 
@@ -26,6 +26,8 @@ server <- function(input, output) {
   })
 
   output$vln_gene_plot <- renderPlot({
-    VlnPlot(dataset, features = input$gene_input, pt.size = 0)
+    VlnPlot(dataset, features = input$gene_input,
+            idents = c(input$diag)) &
+        theme(axis.title.x = element_blank())
   })
 }
