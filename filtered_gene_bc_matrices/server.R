@@ -16,16 +16,4 @@ server <- function(input, output) {
   output$umap_graph <- renderPlot({
     DimPlot(dataset)
   })
-
-  output$categorical_plot <- renderPlot({
-    UMAPPlot(dataset, group.by = input$select)
-  })
-
-  output$gene_plot <- renderPlot({
-    FeaturePlot(dataset, features = input$gene_input)
-  })
-
-  output$vln_gene_plot <- renderPlot({
-    VlnPlot(dataset, features = input$gene_input, pt.size = 0)
-  })
 }

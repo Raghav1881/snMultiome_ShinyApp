@@ -14,17 +14,14 @@ ui <- fluidPage(
   navbarPage(NULL,
     tabPanel("snRNA-seq",
       sidebarLayout(
-        sidebarPanel(width = 3,
+        sidebarPanel(
           selectInput("select", "Categorical Variables:", metadata,
           multiple = TRUE),
           checkboxGroupInput("diag", "Diagnoses:",
                               levels(dataset@meta.data[["diagnosis"]])),
           selectInput("gene_input", "Select gene: ", rownames(x = dataset))),
         mainPanel(
-          fluidRow(
-            column(6, plotOutput("umap_graph")),
-            column(6, plotOutput("categorical_plot"))),
-          fluidRow(plotOutput("gene_plot"), plotOutput("vln_gene_plot"))))),
+          fluidRow(plotOutput("umap_graph"))))),
     tabPanel("Extra features",
       # Create input for extra features
       column(2,
