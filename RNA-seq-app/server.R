@@ -5,7 +5,6 @@ library(uwot)
 library(plotly)
 
 server <- function(input, output) {
-
   # Generate output for features plots
   output$features_graph <- renderPlot({
     VlnPlot(dataset, features = input$feats,
@@ -27,7 +26,7 @@ server <- function(input, output) {
 
   output$vln_gene_plot <- renderPlot({
     VlnPlot(dataset, features = input$gene_input,
-            idents = c(input$diag)) &
+            group.by = "diagnosis_celltype") &
         theme(axis.title.x = element_blank())
   })
 }

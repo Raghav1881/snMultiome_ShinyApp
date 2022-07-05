@@ -12,7 +12,8 @@ feature_list <- c("nCount_RNA", "nCount_SCT", "nFeature_RNA",
 ui <- fluidPage(theme = bs_theme(version = 4, bootswatch = "minty"),
   titlePanel("scRNA-seq Brain"),
   # Create front main page
-  navbarPage(NULL,
+  navbarPage(
+    NULL, theme = bs_theme(version = 4, bootswatch = "minty"),
     tabPanel(
       HTML("snRNA-seq"),
       sidebarLayout(
