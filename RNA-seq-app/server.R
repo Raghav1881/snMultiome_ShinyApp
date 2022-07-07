@@ -4,12 +4,29 @@ library(ggplot2)
 library(uwot)
 library(plotly)
 
-server <- function(input, output) {
+metadata <- colnames(dataset[[]])
+gene_list <- rownames(x = dataset)
+
+server <- function(input, output, session) {
+  # Update dropdown input boxes for all pages
+  updateSelectizeInput(session, "select",
+                      choices = metadata,
+                      server = TRUE)
+  updateSelectizeInput(session, "gene_input",
+                      choices = gene_list,
+                      server = TRUE)
+  updateSelectizeInput(session,
+                      "genediag",
+                      choices = gene_list,
+                      server = TRUE)
+
   # Generate output for features plots
   output$features_graph <- renderPlot({
-    VlnPlot(dataset, features = input$feats,
-            pt.size = 0, ncol = 3) &
-        theme(axis.title.x = element_blank())
+    VlnPlot(dataset,
+            features = input$feats,
+            pt.size = 0,
+            ncol = 3) &
+      theme(axis.title.x = element_blank())
   })
 
   output$umap_graph <- renderPlot({
@@ -24,9 +41,13 @@ server <- function(input, output) {
     FeaturePlot(dataset, features = input$gene_input)
   })
 
+  # Concatenate strings for use in gene expr plots
   output$vln_gene_plot <- renderPlot({
-    VlnPlot(dataset, features = input$gene_input,
-            group.by = "diagnosis_celltype") &
-        theme(axis.title.x = element_blank())
+    tmp <- c(input$diagchk, input$celltype)
+    geneConc <- paste0(tmp, collapse = "_")
+    VlnPlot(dataset,
+            features = input$genediag,
+            group.by = FetchData(object = dataset, vars = geneConc)) &
+    theme(axis.title.x = element_blank())
   })
 }
