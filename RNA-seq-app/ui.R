@@ -36,7 +36,7 @@ ui <- fluidPage(theme = bs_theme(version = 4, bootswatch = "minty"),
           fluidRow(
             column(
               6, plotOutput("gene_plot")))))),
-    # Seperate tab for comparing diag vs gene expr data
+    # Separate tab for comparing diag vs gene expr data
     tabPanel("Diagnosis & Gene Expr",
       HTML("Diagnosis and Gene Expression Analysis"),
       sidebarLayout(
@@ -46,20 +46,19 @@ ui <- fluidPage(theme = bs_theme(version = 4, bootswatch = "minty"),
           checkboxGroupInput("diagchk", "Select diagnosis",
                       levels(diagnosis_list)),
           checkboxGroupInput("celltype", "Select cell types",
-                            levels(dataset))),
+                            levels(dataset$celltype))),
         # Generate violin plot output based on gene, diagnosis, and cell types
         mainPanel(
           width = 9, plotOutput("vln_gene_plot")))),
     tabPanel("Extra features",
       # Create input for extra features
       fluidRow(
-        # Checkbox input for selecting features
-        column(
-          2, checkboxGroupInput("feats",
-                                "Display extra features", feature_list)),
+        sidebarPanel(
+          # Checkbox input for selecting features
+          width = 3, checkboxGroupInput("feats", "Display extra features",
+                                        feature_list)),
         # Plot features graphs
-        column(
-          10, plotOutput("features_graph",
-          height = "80vh",
-          width = "80vh")))
-    )))
+        mainPanel(
+          width = 9, plotOutput("features_graph",
+          height = "80vh"))))
+    ))

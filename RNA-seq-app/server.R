@@ -7,6 +7,20 @@ library(plotly)
 metadata <- colnames(dataset[[]])
 gene_list <- rownames(x = dataset)
 
+genConcList <- function(diaginput, cellinput) {
+  if (length(diaginput) == length(cellinput)) {
+    for (k in diaginput) {
+      tmp <- c(diaginput, cellinput)
+      diagcell[k] <- paste0(tmp, collapse = "_")
+    }
+  } else {
+      validate(
+        need(length(diaginput) == length(cellinput),
+            "Length of diagnosis and cell types must be equal"))
+  }
+  return(diagcell)
+}
+
 server <- function(input, output, session) {
   # Update dropdown input boxes for all pages
   updateSelectizeInput(session, "select",
@@ -15,17 +29,19 @@ server <- function(input, output, session) {
   updateSelectizeInput(session, "gene_input",
                       choices = gene_list,
                       server = TRUE)
-  updateSelectizeInput(session,
-                      "genediag",
+  updateSelectizeInput(session, "genediag",
                       choices = gene_list,
                       server = TRUE)
 
   # Generate output for features plots
   output$features_graph <- renderPlot({
-    VlnPlot(dataset,
+      validate(
+        need(input$feats, "No features selected"))
+      VlnPlot(dataset,
             features = input$feats,
             pt.size = 0,
-            ncol = 3) &
+            ncol = 3,
+            group.by = "group") &
       theme(axis.title.x = element_blank())
   })
 
@@ -43,11 +59,11 @@ server <- function(input, output, session) {
 
   # Concatenate strings for use in gene expr plots
   output$vln_gene_plot <- renderPlot({
-    tmp <- c(input$diagchk, input$celltype)
-    geneConc <- paste0(tmp, collapse = "_")
+    gctypes <- genConcList(input$diagchk, input$celltype)
     VlnPlot(dataset,
             features = input$genediag,
-            group.by = FetchData(object = dataset, vars = geneConc)) &
-    theme(axis.title.x = element_blank())
+            idents = gctypes) &
+    theme(axis.title.x = element_blank(),
+          legend.position = "None")
   })
 }
