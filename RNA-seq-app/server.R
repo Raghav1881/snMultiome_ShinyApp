@@ -6,19 +6,30 @@ library(plotly)
 
 metadata <- colnames(dataset[[]])
 gene_list <- rownames(x = dataset)
+diagcell <- vector()
+tempdiagcell <- vector()
+tempcellinput <- vector()
 
 genConcList <- function(diaginput, cellinput) {
-  if (length(diaginput) == length(cellinput)) {
-    for (k in diaginput) {
-      tmp <- c(diaginput, cellinput)
-      diagcell[k] <- paste0(tmp, collapse = "_")
+  if (length(diaginput) != length(tempdiagcell) |
+  length(cellinput) != length(tempcellinput)){
+    tmp <- vector()
+    tempdiagcell <- diaginput
+    tempcellinput <- cellinput
+    for (k in length(tempdiagcell)) {
+      for (l in length(tempcellinput)) {
+        tmp[l + k - 1] <- c(paste0(tempdiagcell[k], tempcellinput[l],
+                                   collapse = "_"))
+      }
     }
   } else {
       validate(
-        need(length(diaginput) == length(cellinput),
+        need(length(diaginput) | length(cellinput) > 0 &
+        length(diaginput) == length(tempdiagcell) &
+        length(cellinput) == length(tempcellinput),
             "Length of diagnosis and cell types must be equal"))
   }
-  return(diagcell)
+  return(tmp)
 }
 
 server <- function(input, output, session) {
@@ -31,6 +42,9 @@ server <- function(input, output, session) {
                       server = TRUE)
   updateSelectizeInput(session, "genediag",
                       choices = gene_list,
+                      server = TRUE)
+  updateSelectizeInput(session, "celltype",
+                      choices = levels(dataset$celltype),
                       server = TRUE)
 
   # Generate output for features plots
