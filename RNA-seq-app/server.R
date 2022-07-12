@@ -16,20 +16,24 @@ genConcList <- function(diaginput, cellinput) {
     tmp <- vector()
     tempdiagcell <- diaginput
     tempcellinput <- cellinput
+    diagcount <- 0
+    cellcount <- 0
     for (k in length(tempdiagcell)) {
+      diagcount <- diagcount + 1
       for (l in length(tempcellinput)) {
         tmp[l + k - 1] <- c(paste0(tempdiagcell[k], tempcellinput[l],
                                    collapse = "_"))
+        cellcount <- cellcount + 1
       }
     }
   } else {
       validate(
         need(length(diaginput) | length(cellinput) > 0 &
-        length(diaginput) == length(tempdiagcell) &
-        length(cellinput) == length(tempcellinput),
-            "Length of diagnosis and cell types must be equal"))
+          length(diaginput) == length(tempdiagcell) &
+          length(cellinput) == length(tempcellinput),
+          "Length of diagnosis and cell types must be equal"))
   }
-  return(tmp)
+  return(tmp, diagcount, cellcount)
 }
 
 server <- function(input, output, session) {
