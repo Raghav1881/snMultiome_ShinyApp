@@ -8,8 +8,8 @@ library(gridExtra)
 metadata <- colnames(dataset[[]])
 gene_list <- rownames(x = dataset)
 diagcell <- vector()
-tempdiagcell <- vector()
-tempcellinput <- vector()
+tempdiagcell <- c()
+tempcellinput <- c()
 diagcount <- 0
 cellcount <- 0
 
@@ -17,11 +17,14 @@ genConcList <- function(diaginput, cellinput) {
   if (length(diaginput) != length(tempdiagcell) |
   length(cellinput) != length(tempcellinput)) {
     lstAll <- list()
-    for (k in length(tempdiagcell)) {
-      for (l in length(tempcellinput)) {
-        lstAll[k] <- c(paste0(tempdiagcell[k], tempcellinput[l],
-                                    collapse = "_"))
+    tempdiagcell <- input$diagchk
+    tempcellinput <- input$celltype
+    for (k in 1:length(tempdiagcell)) {
+      for (l in 1:length(tempcellinput)) {
+        temp[l] <- c(paste(tempdiagcell[k], tempcellinput[l],
+                             sep = "_"))
       }
+      lstAll[[k]] <- temp
     }
     return(lstAll)
   } else {
@@ -46,48 +49,6 @@ server <- function(input, output, session) {
   updateSelectizeInput(session, "celltype",
                       choices = levels(dataset$celltype),
                       server = TRUE)
-
-gctypes <- reactiveValuesToList(genConcList(isolate(input$diagchk), isolate(input$celltype)))
-
-vlnpt1 <- reactive({
-  VlnPlot(dataset,
-          features = input$genediag,
-          idents = gctypes[1]) &
-  theme(axis.title.x = element_blank(),
-         legend.position = "None")
-})
-
-vlnpt2 <- reactive({
-  VlnPlot(dataset,
-          features = input$genediag,
-          idents = gctypes[2]) &
-  theme(axis.title.x = element_blank(),
-         legend.position = "None")
-})
-
-vlnpt3 <- reactive({
-  VlnPlot(dataset,
-          features = input$genediag,
-          idents = gctypes[3]) &
-  theme(axis.title.x = element_blank(),
-         legend.position = "None")
-})
-
-vlnpt4 <- reactive({
-  VlnPlot(dataset,
-          features = input$genediag,
-          idents = gctypes[4]) &
-  theme(axis.title.x = element_blank(),
-         legend.position = "None")
-})
-
-vlnpt5 <- reactive({
-  VlnPlot(dataset,
-          features = input$genediag,
-          idents = gctypes[5]) &
-  theme(axis.title.x = element_blank(),
-         legend.position = "None")
-})
 
   # Generate output for features plots
   output$features_graph <- renderPlot({
@@ -114,8 +75,40 @@ vlnpt5 <- reactive({
   })
 
   # Concatenate strings for use in gene expr plots
-  output$vln_gene_plot <- renderPlot({
-    ptlist <- list(vlnpt1(), vlnpt2(), vlnpt3(), vlnpt4(), vlnpt5())
-    grid.arrange(grobs = ptlist, ncol = length(ptlist))
-      })
+  output$vln_plot1 <- renderPlot({
+    gctypes <<- genConcList(input$diagchk, input$celltype)
+    VlnPlot(dataset,
+            features = input$genediag,
+            idents = gctypes[[1]]) &
+    theme(axis.title.x = element_blank(),
+          legend.position = "None")
+})
+  output$vln_plot2 <- renderPlot({
+    VlnPlot(dataset,
+            features = input$genediag,
+            idents = gctypes[[2]]) &
+    theme(axis.title.x = element_blank(),
+          legend.position = "None")
+})
+  output$vln_plot3 <- renderPlot({
+    VlnPlot(dataset,
+            features = input$genediag,
+            idents = gctypes[[3]]) &
+    theme(axis.title.x = element_blank(),
+          legend.position = "None")
+})
+  output$vln_plot4 <- renderPlot({
+    VlnPlot(dataset,
+            features = input$genediag,
+            idents = gctypes[[4]]) &
+    theme(axis.title.x = element_blank(),
+          legend.position = "None")
+})
+  output$vln_plot5 <- renderPlot({
+    VlnPlot(dataset,
+            features = input$genediag,
+            idents = gctypes[[5]]) &
+    theme(axis.title.x = element_blank(),
+          legend.position = "None")
+})
 }

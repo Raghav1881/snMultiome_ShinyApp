@@ -50,7 +50,11 @@ ui <- fluidPage(theme = mtheme,
                             levels(dataset$celltype))),
         # Generate violin plot output based on gene, diagnosis, and cell types
         mainPanel(
-          width = 9, plotOutput("vln_gene_plot")))),
+          width = 9, plotOutput("vln_plot1"),
+          plotOutput("vln_plot2"),
+          plotOutput("vln_plot3"),
+          plotOutput("vln_plot4"),
+          plotOutput("vln_plot5")))),
     tabPanel("Extra features",
       # Create input for extra features
       fluidRow(
