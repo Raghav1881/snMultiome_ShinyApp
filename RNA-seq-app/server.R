@@ -23,14 +23,13 @@ genConcList <- function(diaginput, cellinput) {
                                     collapse = "_"))
       }
     }
+    return(lstAll)
   } else {
     validate(
-      need(length(diaginput) | length(cellinput) > 0 &
-           length(diaginput) == length(tempdiagcell) &
+      need(length(diaginput) == length(tempdiagcell) &
            length(cellinput) == length(tempcellinput),
            "Length of diagnosis and cell types must be equal"))
   }
-  return(lstAll)
 }
 
 server <- function(input, output, session) {
@@ -47,12 +46,13 @@ server <- function(input, output, session) {
   updateSelectizeInput(session, "celltype",
                       choices = levels(dataset$celltype),
                       server = TRUE)
-gctypes <- reactive(genConcList(input$diagchk, input$celltype))
+
+gctypes <- reactiveValuesToList(genConcList(isolate(input$diagchk), isolate(input$celltype)))
 
 vlnpt1 <- reactive({
   VlnPlot(dataset,
           features = input$genediag,
-          idents = gctypes$temp[1]) &
+          idents = gctypes[1]) &
   theme(axis.title.x = element_blank(),
          legend.position = "None")
 })
@@ -60,7 +60,7 @@ vlnpt1 <- reactive({
 vlnpt2 <- reactive({
   VlnPlot(dataset,
           features = input$genediag,
-          idents = gctypes$temp[2]) &
+          idents = gctypes[2]) &
   theme(axis.title.x = element_blank(),
          legend.position = "None")
 })
@@ -68,7 +68,7 @@ vlnpt2 <- reactive({
 vlnpt3 <- reactive({
   VlnPlot(dataset,
           features = input$genediag,
-          idents = gctypes$temp[3]) &
+          idents = gctypes[3]) &
   theme(axis.title.x = element_blank(),
          legend.position = "None")
 })
@@ -76,7 +76,7 @@ vlnpt3 <- reactive({
 vlnpt4 <- reactive({
   VlnPlot(dataset,
           features = input$genediag,
-          idents = gctypes$temp[4]) &
+          idents = gctypes[4]) &
   theme(axis.title.x = element_blank(),
          legend.position = "None")
 })
@@ -84,7 +84,7 @@ vlnpt4 <- reactive({
 vlnpt5 <- reactive({
   VlnPlot(dataset,
           features = input$genediag,
-          idents = gctypes$temp[5]) &
+          idents = gctypes[5]) &
   theme(axis.title.x = element_blank(),
          legend.position = "None")
 })
