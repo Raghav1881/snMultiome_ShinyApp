@@ -10,12 +10,13 @@ metadata <- colnames(dataset[[]])
 feature_list <- c("nCount_RNA", "nCount_SCT", "nFeature_RNA",
                   "nFeature_SCT", "percent.mt", "percent.rpl", "percent.rps")
 gene_list <- rownames(x = dataset)
+mtheme <- bs_theme(version = 4, bootswatch = "minty")
 
-ui <- fluidPage(theme = bs_theme(version = 4, bootswatch = "minty"),
+ui <- fluidPage(theme = mtheme,
   titlePanel("scRNA-seq Brain"),
   # Create front main page
   navbarPage(
-    NULL, theme = bs_theme(version = 4, bootswatch = "minty"),
+    NULL, theme = mtheme,
     tabPanel("snRNA-seq",
       HTML("snRNA-seq UMAP Data"),
       sidebarLayout(
