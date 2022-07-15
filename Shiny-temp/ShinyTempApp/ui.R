@@ -1,28 +1,32 @@
 library(Seurat)
+library(shinyWidgets)
 library(shiny)
-library(stringr)
+library(bslib)
 
-diagnosisList <- levels(dataset@meta.data[["diagnosis"]])
+mtheme <- bs_theme(version = 4, bootswatch = "minty")
 
-ui <- fluidPage(
+ui <- fluidPage(theme = mtheme,
   titlePanel(
-    "scRNA-seq Brain ALS Data"),
+    "snATAC- and snRNA-Seq Atlas of ALS/FTLD Orbitofrontal Cortex"),
     navbarPage(
-      NULL,
-      tabPanel("snRNA-seq",
-         HTML("Diagnosis and Gene Expression Analysis"),
-         sidebarLayout(
-           sidebarPanel(
-             width = 3,
-             selectizeInput("genediag", "Select gene", choices = NULL),
-             pickerInput("diagchk",
-                         label = "Select diagnosis",
-                        choices = diagnosisList[-1]),
-             checkboxGroupInput("celltype", "Select cell types",
+      NULL, theme = mtheme,
+      tabPanel("UMAP-RNA"),
+      tabPanel("UMAP-ATAC"),
+      tabPanel("Coverage/Violin Plots",
+        HTML("Diagnosis and Gene Expression Analysis"),
+        sidebarLayout(
+          sidebarPanel(
+            width = 3,
+            selectizeInput("genediag",
+                        "Select gene",
+                        choices = NULL),
+            selectizeInput("diagchk",
+                        "Select diagnosis",
+                        choices = NULL),
+            checkboxGroupInput("celltype", "Select cell types",
                                 levels(dataset$celltype))),
-           # Generate violin plot output based on gene, diagnosis, and cell types
-           mainPanel(
-             width = 9, plotOutput("vln_gene_plot"))))
+          mainPanel(
+            width = 9, verbatimTextOutput("test"), verbatimTextOutput("test2")))),
+      tabPanel("Quality Control")
     )
 )
-
