@@ -26,13 +26,13 @@ shinyServer(function(input, output, session) {
                       choices = geneList,
                       server = TRUE,
                       selected = "C9orf72")
-  updateSelectizeInput(session, "diagchk1",
-                      choices = diagnosisList[-1],
-                      server = TRUE)
   updateSelectizeInput(session, "genediag2",
                       choices = geneList,
                       server = TRUE,
                       selected = "C9orf72")
+  updateSelectizeInput(session, "diagchk1",
+                      choices = diagnosisList[-1],
+                      server = TRUE)
   updateSelectizeInput(session, "diagchk2",
                       choices = diagnosisList[-1],
                       server = TRUE)
@@ -51,11 +51,17 @@ shinyServer(function(input, output, session) {
   })
 
   output$dimPlotRNACtrl <- renderPlot({
-    DimPlot(dataset, group.by = currentGeneDiag1()[1])
+    FeaturePlot(dataset,
+                features = input$genediag1,
+                cells = Cells(input$celltype1),
+                split.by = FetchData(dataset,
+                                     idents = input$celltype1))
   })
 
   output$dimPlotRNADiag <- renderPlot({
-    DimPlot(dataset, split.by = currentGeneDiag1()[2])
+    FeaturePlot(dataset,
+                features = input$genediag1,
+                split.by = input$diagchk1)
   })
 
   output$violin1 <- renderPlot({
@@ -90,7 +96,8 @@ shinyServer(function(input, output, session) {
 
   output$features_graph <- renderPlot({
     validate(
-      need(input$feats, "No features selected"))
+      need(input$feats, "No features selected")
+    )
     VlnPlot(dataset,
       features = input$feats,
       pt.size = 0,
