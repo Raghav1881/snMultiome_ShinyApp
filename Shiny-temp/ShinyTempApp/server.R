@@ -3,6 +3,7 @@ library(Seurat)
 library(ggplot2)
 
 geneList <- rownames(dataset)
+geneListATAC <- rownames(ATACdataset@assays$RNA)
 diagnosisList <- levels(dataset@meta.data[["diagnosis"]])
 
 getGeneList <- function(diaglist, celllist) {
@@ -27,6 +28,10 @@ shinyServer(function(input, output, session) {
                       server = TRUE,
                       selected = "C9orf72")
   updateSelectizeInput(session, "genediag2",
+                      choices = geneListATAC,
+                      server = TRUE,
+                      selected = "C9orf72")
+  updateSelectizeInput(session, "genediag3",
                       choices = geneList,
                       server = TRUE,
                       selected = "C9orf72")
@@ -36,18 +41,22 @@ shinyServer(function(input, output, session) {
   updateSelectizeInput(session, "diagchk2",
                       choices = diagnosisList[-1],
                       server = TRUE)
+  updateSelectizeInput(session, "diagchk3",
+                      choices = diagnosisList[-1],
+                      server = TRUE)
 
   currentGeneDiag1 <- reactive({getGeneList(input$diagchk1, input$celltype1)})
   currentGeneDiag2 <- reactive({getGeneList(input$diagchk2, input$celltype2)})
-  output$test <- renderPrint({print({currentGeneDiag()[1]})})
-  output$test2 <- renderPrint({print({currentGeneDiag()[2]})})
+  currentGeneDiag3 <- reactive({getGeneList(input$diagchk3, input$celltype3)})
 
   output$dimPlotRNA <- renderPlot({
-    DimPlot(dataset, group.by = "celltype")
+    DimPlot(dataset,
+            group.by = "celltype")
   })
 
   output$featPlotRNA <- renderPlot({
-    FeaturePlot(dataset, features = input$genediag1)
+    FeaturePlot(dataset,
+                features = input$genediag1)
   })
 
   output$dimPlotRNACtrl <- renderPlot({
@@ -64,15 +73,51 @@ shinyServer(function(input, output, session) {
                 split.by = input$diagchk1)
   })
 
+  output$dimPlotATAC <- renderPlot({
+    DimPlot(ATACdataset,
+            group.by = "celltype")
+  })
+
+  output$featPlotATAC <- renderPlot({
+    FeaturePlot(ATACdataset,
+                features = input$genediag2)
+  })
+
+  output$dimPlotATACCtrl <- renderPlot({
+    FeaturePlot(ATACdataset,
+                features = input$genediag2,
+                cells = Cells(input$celltype2),
+                split.by = FetchData(ATACdataset,
+                                     idents = input$celltype2))
+  })
+
+  output$dimPlotATACDiag <- renderPlot({
+    FeaturePlot(ATACdataset,
+                features = input$genediag2,
+                split.by = input$diagchk2)
+  })
+
+  output$coverage_plot <- renderPlot({
+    validate(
+      need(input$genediag3, "Please select a gene"),
+      need(input$diagchk3, "Please select a diagnosis"),
+      need(input$celltype3, "Please select the celltypes")
+    )
+    CoveragePlot(ATACdataset,
+                 region = input$genediag3,
+                 idents = c(currentGeneDiag3()[[1]],
+                            currentGeneDiag3()[[2]]))
+  })
+
   output$violin1 <- renderPlot({
     validate(
-      need(input$genediag2, "Please select a gene"),
-      need(input$diagchk2, "Please select a diagnosis"),
-      need(input$celltype2, "Please select the celltypes")
+      need(input$genediag3, ""),
+      need(input$diagchk3, ""),
+      need(input$celltype3, "")
     )
     VlnPlot(dataset,
-      features = input$genediag2,
-      idents = currentGeneDiag2()[[1]],
+      features = input$genediag3,
+      idents = currentGeneDiag3()[[1]],
       pt.size = 0
     ) &
     theme(axis.title.x = element_blank(),
@@ -81,13 +126,13 @@ shinyServer(function(input, output, session) {
 
   output$violin2 <- renderPlot({
     validate(
-      need(input$genediag2, ""),
-      need(input$diagchk2, ""),
-      need(input$celltype2, "")
+      need(input$genediag3, ""),
+      need(input$diagchk3, ""),
+      need(input$celltype3, "")
     )
     VlnPlot(dataset,
-      features = input$genediag2,
-      idents = currentGeneDiag2()[[2]],
+      features = input$genediag3,
+      idents = currentGeneDiag3()[[2]],
       pt.size = 0
     ) &
     theme(axis.title.x = element_blank(),
