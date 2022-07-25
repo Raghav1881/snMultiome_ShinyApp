@@ -1,4 +1,5 @@
 library(Seurat)
+library(Signac)
 library(shinyWidgets)
 library(shiny)
 library(bslib)
@@ -8,6 +9,7 @@ library(shinycustomloader)
 mtheme <- bs_theme(version = 5, bootswatch = "flatly")
 feature_list <- c("nCount_RNA", "nCount_SCT", "nFeature_RNA",
                   "nFeature_SCT", "percent.mt", "percent.rpl", "percent.rps")
+feature_listATAC <- c("nucleosome_group")
 
 ui <- fluidPage(theme = mtheme,
   titlePanel(
@@ -18,20 +20,14 @@ ui <- fluidPage(theme = mtheme,
         HTML("Dimensional and Feature Plot of snRNA-seq Data"),
         sidebarLayout(
           sidebarPanel(
-            width = 3,
+            width = 2,
             selectizeInput("genediag1",
                            "Select gene",
-                           choices = NULL),
-            selectizeInput("diagchk1",
-                           "Select diagnosis",
-                           choices = NULL),
-            checkboxGroupInput("celltype1",
-                               "Select cell types",
-                               levels(dataset$celltype),
-                               selected = "Oligodendrocytes")),
+                           choices = NULL)),
           mainPanel(
-            width = 9,
+            width = 10,
             fluidRow(
+              h1("Dimensional plot and Feature Plot"),
               column(
                 6,
                 plotOutput("dimPlotRNA")),
@@ -39,6 +35,8 @@ ui <- fluidPage(theme = mtheme,
                 6,
                 plotOutput("featPlotRNA"))),
             fluidRow(
+              hr(),
+              h1("Feature plot by diagnosis"),
               column(
                 12,
                 plotOutput("dimPlotRNACtrl")))
@@ -47,19 +45,14 @@ ui <- fluidPage(theme = mtheme,
         HTML("Dimensional and Feature Plot of snATAC-seq Data"),
         sidebarLayout(
           sidebarPanel(
-            width = 3,
+            width = 2,
             selectizeInput("genediag2",
                            "Select gene",
-                           choices = NULL),
-            selectizeInput("diagchk2",
-                           "Select diagnosis",
-                           choices = NULL),
-            checkboxGroupInput("celltype2", "Select cell types",
-                                levels(dataset$celltype),
-                                selected = "Oligodendrocytes")),
+                           choices = NULL)),
           mainPanel(
-            width = 9,
+            width = 10,
             fluidRow(
+              h1("Dimensional and Feature Plot of ATAC-seq Data"),
               column(
                 6,
                 plotOutput("dimPlotATAC")),
@@ -67,6 +60,8 @@ ui <- fluidPage(theme = mtheme,
                 6,
                 plotOutput("featPlotATAC"))),
             fluidRow(
+              hr(),
+              h1("Feature plot by diagnosis"),
               column(
                 12,
                 plotOutput("dimPlotATACCtrl")))
@@ -79,22 +74,24 @@ ui <- fluidPage(theme = mtheme,
             width = 3,
             selectizeInput("genediag3", "Select gene",
                             choices = NULL),
-            selectizeInput("diagchk3","Select diagnosis",
+            selectizeInput("diagchk3", "Select diagnosis",
                             choices = NULL),
-            checkboxGroupInput("celltype3", "Select cell types",
+            prettyCheckboxGroup("celltype3", "Select cell types",
                                 levels(dataset$celltype),
-                                selected = "Oligodendrocytes")),
+                                selected = "Oligodendrocytes",
+                                icon = icon("check-square"),
+                                status = "primary",
+                                outline = FALSE,
+                                animation = "smooth")),
           mainPanel(
             width = 9,
             h1("Coverage Plot"),
             fluidRow(
               plotOutput("coverage_plot",
                           height = "60vh"),
-              br(),
               hr()),
             fluidRow(
               h1("Violin Plots"),
-              br(),
               column(
                 6, plotOutput("violin1",
                               height = "40vh")),
@@ -109,13 +106,33 @@ ui <- fluidPage(theme = mtheme,
         fluidRow(
           sidebarPanel(
             # Checkbox input for selecting features
-            width = 3, checkboxGroupInput("feats",
-                                          "Display extra features",
-                                          feature_list)),
+            width = 3,
+            prettyCheckboxGroup("feats",
+                               "snRNA-seq Features",
+                                feature_list,
+                                selected = "nCount_RNA",
+                                icon = icon("check-square"),
+                                status = "primary",
+                                outline = FALSE,
+                                animation = "smooth"),
+            hr(),
+            prettyCheckboxGroup("featsATAC",
+                                "snATAC-seq Features",
+                                feature_listATAC,
+                                selected = "nCount_RNA",
+                                icon = icon("check-square"),
+                                status = "primary",
+                                outline = FALSE,
+                                animation = "smooth")),
           # Plot features graphs
           mainPanel(
             width = 9,
+            h1("snRNA-seq Feature Plots"),
             plotOutput("features_graph",
+                        height = "60vh"),
+            hr(),
+            h1("snATAC-seq Feature Plots"),
+            plotOutput("features_graphATAC",
                         height = "60vh")
           )
         ))

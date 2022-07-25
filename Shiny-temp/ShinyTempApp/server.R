@@ -32,15 +32,9 @@ shinyServer(function(input, output, session) {
                       server = TRUE,
                       selected = "C9orf72")
   updateSelectizeInput(session, "genediag3",
-                      choices = geneList,
+                      choices = geneListATAC,
                       server = TRUE,
                       selected = "C9orf72")
-  updateSelectizeInput(session, "diagchk1",
-                      choices = diagnosisList[-1],
-                      server = TRUE)
-  updateSelectizeInput(session, "diagchk2",
-                      choices = diagnosisList[-1],
-                      server = TRUE)
   updateSelectizeInput(session, "diagchk3",
                       choices = diagnosisList[-1],
                       server = TRUE)
@@ -90,7 +84,10 @@ shinyServer(function(input, output, session) {
     CoveragePlot(ATACdataset,
                  region = input$genediag3,
                  idents = c(currentGeneDiag3()[[1]],
-                            currentGeneDiag3()[[2]]))
+                            currentGeneDiag3()[[2]])
+                ) &
+                theme(strip.text.y = element_text(size = 10),
+                      title = element_text(size = 15))
   })
 
   output$violin1 <- renderPlot({
@@ -131,8 +128,16 @@ shinyServer(function(input, output, session) {
       features = input$feats,
       pt.size = 0,
       ncol = 3,
-      group.by = "group") &
+      group.by = "celltype") &
     theme(axis.title.x = element_blank())
   })
 
+  output$features_graphATAC  <- renderPlot({
+    validate(
+      need(input$featsATAC, "No features selected")
+    )
+    FragmentHistogram(ATACdataset,
+      group.by = "nucleosome_group") &
+    theme(axis.title.x = element_blank())
+  })
 })
