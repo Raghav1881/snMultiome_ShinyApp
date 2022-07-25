@@ -40,11 +40,8 @@ ui <- fluidPage(theme = mtheme,
                 plotOutput("featPlotRNA"))),
             fluidRow(
               column(
-                6,
-                plotOutput("dimPlotRNACtrl")),
-              column(
-                6,
-                plotOutput("dimPlotRNADiag")))
+                12,
+                plotOutput("dimPlotRNACtrl")))
         ))),
       tabPanel("UMAP-ATAC",
         HTML("Dimensional and Feature Plot of snATAC-seq Data"),
@@ -71,11 +68,9 @@ ui <- fluidPage(theme = mtheme,
                 plotOutput("featPlotATAC"))),
             fluidRow(
               column(
-                6,
-                plotOutput("dimPlotATACCtrl")),
-              column(
-                6,
-                plotOutput("dimPlotATACDiag")))
+                12,
+                plotOutput("dimPlotATACCtrl")))
+
         ))),
       tabPanel("Coverage/Violin Plots",
         HTML("Diagnosis and Gene Expression Analysis"),
@@ -91,10 +86,15 @@ ui <- fluidPage(theme = mtheme,
                                 selected = "Oligodendrocytes")),
           mainPanel(
             width = 9,
+            h1("Coverage Plot"),
             fluidRow(
               plotOutput("coverage_plot",
-                          height = "60vh")),
+                          height = "60vh"),
+              br(),
+              hr()),
             fluidRow(
+              h1("Violin Plots"),
+              br(),
               column(
                 6, plotOutput("violin1",
                               height = "40vh")),

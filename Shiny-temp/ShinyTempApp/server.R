@@ -62,15 +62,7 @@ shinyServer(function(input, output, session) {
   output$dimPlotRNACtrl <- renderPlot({
     FeaturePlot(dataset,
                 features = input$genediag1,
-                cells = Cells(input$celltype1),
-                split.by = FetchData(dataset,
-                                     idents = input$celltype1))
-  })
-
-  output$dimPlotRNADiag <- renderPlot({
-    FeaturePlot(dataset,
-                features = input$genediag1,
-                split.by = input$diagchk1)
+                split.by = "diagnosis")
   })
 
   output$dimPlotATAC <- renderPlot({
@@ -86,15 +78,7 @@ shinyServer(function(input, output, session) {
   output$dimPlotATACCtrl <- renderPlot({
     FeaturePlot(ATACdataset,
                 features = input$genediag2,
-                cells = Cells(input$celltype2),
-                split.by = FetchData(ATACdataset,
-                                     idents = input$celltype2))
-  })
-
-  output$dimPlotATACDiag <- renderPlot({
-    FeaturePlot(ATACdataset,
-                features = input$genediag2,
-                split.by = input$diagchk2)
+                split.by = "diagnosis")
   })
 
   output$coverage_plot <- renderPlot({
