@@ -127,7 +127,7 @@ shinyServer(function(input, output, session) {
     VlnPlot(dataset,
       features = input$feats,
       pt.size = 0,
-      ncol = 3,
+      ncol = 2,
       group.by = "celltype") &
     theme(axis.title.x = element_blank())
   })

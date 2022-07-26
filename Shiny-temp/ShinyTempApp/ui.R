@@ -3,10 +3,8 @@ library(Signac)
 library(shinyWidgets)
 library(shiny)
 library(bslib)
-library(shinycssloaders)
-library(shinycustomloader)
 
-mtheme <- bs_theme(version = 5, bootswatch = "flatly")
+mtheme <- bs_theme(version = 5, bootswatch = "materia")
 feature_list <- c("nCount_RNA", "nCount_SCT", "nFeature_RNA",
                   "nFeature_SCT", "percent.mt", "percent.rpl", "percent.rps")
 feature_listATAC <- c("nucleosome_group")
@@ -16,6 +14,7 @@ ui <- fluidPage(theme = mtheme,
     "snATAC- and snRNA-Seq Atlas of ALS/FTLD Orbitofrontal Cortex"),
     navbarPage(
       NULL,
+      theme = mtheme,
       tabPanel("UMAP-RNA",
         HTML("Dimensional and Feature Plot of snRNA-seq Data"),
         sidebarLayout(
@@ -88,7 +87,7 @@ ui <- fluidPage(theme = mtheme,
             h1("Coverage Plot"),
             fluidRow(
               plotOutput("coverage_plot",
-                          height = "60vh"),
+                          height = "65vh"),
               hr()),
             fluidRow(
               h1("Violin Plots"),
@@ -127,13 +126,18 @@ ui <- fluidPage(theme = mtheme,
           # Plot features graphs
           mainPanel(
             width = 9,
-            h1("snRNA-seq Feature Plots"),
-            plotOutput("features_graph",
-                        height = "60vh"),
-            hr(),
-            h1("snATAC-seq Feature Plots"),
-            plotOutput("features_graphATAC",
-                        height = "60vh")
+            fluidRow(
+              column(
+                6,
+                h1("snRNA-seq Feature Plots"),
+                plotOutput("features_graph",
+                          height = "80vh")),
+              column(
+                6,
+                h1("snATAC-seq Feature Plots"),
+                plotOutput("features_graphATAC",
+                            height = "80vh"))
+              )
           )
         ))
     )
