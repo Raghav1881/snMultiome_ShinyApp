@@ -3,6 +3,7 @@ library(Signac)
 library(shinyWidgets)
 library(shiny)
 library(bslib)
+library(Cairo)
 
 mtheme <- bs_theme(version = 5, bootswatch = "materia")
 feature_list <- c("nCount_RNA", "nCount_SCT", "nFeature_RNA",
