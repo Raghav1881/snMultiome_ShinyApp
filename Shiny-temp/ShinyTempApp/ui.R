@@ -3,7 +3,6 @@ library(Signac)
 library(shinyWidgets)
 library(shiny)
 library(bslib)
-library(Cairo)
 
 mtheme <- bs_theme(version = 5, bootswatch = "materia")
 feature_list <- c("nCount_RNA", "nCount_SCT", "nFeature_RNA",
@@ -30,16 +29,22 @@ ui <- fluidPage(theme = mtheme,
               h1("Dimensional plot and Feature Plot"),
               column(
                 6,
-                plotOutput("dimPlotRNA")),
+                plotOutput("dimPlotRNA",),
+                downloadButton("dimPlotDownload",
+                                label = "")),
               column(
                 6,
-                plotOutput("featPlotRNA"))),
+                plotOutput("featPlotRNA"),
+                downloadButton("featPlotRNADownload",
+                                label = ""))),
             fluidRow(
               hr(),
               h1("Feature plot by diagnosis"),
               column(
                 12,
-                plotOutput("dimPlotRNACtrl")))
+                plotOutput("dimPlotRNACtrl"),
+                downloadButton("dimPlotRNACtrlDownload",
+                                label = "")))
         ))),
       tabPanel("UMAP-ATAC",
         HTML("Dimensional and Feature Plot of snATAC-seq Data"),
@@ -55,16 +60,22 @@ ui <- fluidPage(theme = mtheme,
               h1("Dimensional and Feature Plot of ATAC-seq Data"),
               column(
                 6,
-                plotOutput("dimPlotATAC")),
+                plotOutput("dimPlotATAC"),
+                downloadButton("dimPlotATACDownload",
+                                label = "")),
               column(
                 6,
-                plotOutput("featPlotATAC"))),
+                plotOutput("featPlotATAC"),
+                downloadButton("featPlotATACDownload",
+                                label = ""))),
             fluidRow(
               hr(),
               h1("Feature plot by diagnosis"),
               column(
                 12,
-                plotOutput("dimPlotATACCtrl")))
+                plotOutput("dimPlotATACCtrl"),
+                downloadButton("dimPlotATACCtrlDownload",
+                                label = "")))
 
         ))),
       tabPanel("Coverage/Violin Plots",
@@ -88,16 +99,27 @@ ui <- fluidPage(theme = mtheme,
             h1("Coverage Plot"),
             fluidRow(
               plotOutput("coverage_plot",
-                          height = "65vh"),
+                          height = "65vh")),
+            fluidRow(
+              column(
+                6,
+                downloadButton("coverage_plotDownload",
+                              label = "")),
               hr()),
             fluidRow(
               h1("Violin Plots"),
               column(
-                6, plotOutput("violin1",
-                              height = "40vh")),
+                6,
+                plotOutput("violin1",
+                            height = "40vh"),
+                downloadButton("violin1Download",
+                                label = "")),
               column(
-                6, plotOutput("violin2",
-                              height = "40vh")))
+                6,
+                plotOutput("violin2",
+                            height = "40vh"),
+                downloadButton("violin2Download",
+                                label = "")))
             )
         )),
       tabPanel("Quality Control",
@@ -119,7 +141,7 @@ ui <- fluidPage(theme = mtheme,
             prettyCheckboxGroup("featsATAC",
                                 "snATAC-seq Features",
                                 feature_listATAC,
-                                selected = "nCount_RNA",
+                                selected = "nucleosome_group",
                                 icon = icon("check-square"),
                                 status = "primary",
                                 outline = FALSE,
@@ -132,13 +154,16 @@ ui <- fluidPage(theme = mtheme,
                 6,
                 h1("snRNA-seq Feature Plots"),
                 plotOutput("features_graph",
-                          height = "80vh")),
+                          height = "80vh"),
+                downloadButton("features_graphDownload",
+                                label = "")),
               column(
                 6,
                 h1("snATAC-seq Feature Plots"),
                 plotOutput("features_graphATAC",
-                            height = "80vh"))
-              )
+                            height = "80vh"),
+                downloadButton("features_graphATACDownload",
+                                label = "")))
           )
         ))
     )

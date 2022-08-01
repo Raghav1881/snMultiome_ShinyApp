@@ -48,32 +48,102 @@ shinyServer(function(input, output, session) {
             group.by = "celltype")
   })
 
+  output$dimPlotDownload <- downloadHandler(
+    filename = function() {
+      paste("DimPlot", input$genediag1, ".png", sep = "")
+    },
+    content = function(file)  {
+      ggsave(file,
+            DimPlot(dataset,
+                    group.by = "celltype"))
+    }
+  )
+
   output$featPlotRNA <- renderPlot({
+    req(input$genediag1)
     FeaturePlot(dataset,
                 features = input$genediag1)
   })
 
+  output$featPlotRNADownload <- downloadHandler(
+    filename = function() {
+      paste("FeatPlot", input$genediag1, ".png", sep = "")
+    },
+    content = function(file)  {
+      ggsave(file,
+            FeaturePlot(dataset,
+                        features = input$genediag1))
+    }
+  )
+
   output$dimPlotRNACtrl <- renderPlot({
+    req(input$genediag1)
     FeaturePlot(dataset,
                 features = input$genediag1,
                 split.by = "diagnosis")
   })
+
+  output$dimPlotRNACtrlDownload <- downloadHandler(
+    filename = function() {
+      paste("FeatPlotDiagnoses", input$genediag1, ".png", sep = "")
+    },
+    content = function(file)  {
+      ggsave(file,
+            FeaturePlot(dataset,
+                        features = input$genediag1,
+                        split.by = "diagnosis"))
+    }
+  )
 
   output$dimPlotATAC <- renderPlot({
     DimPlot(ATACdataset,
             group.by = "celltype")
   })
 
+  output$dimPlotATACDownload <- downloadHandler(
+    filename = function() {
+      paste("DimPlotATAC", input$genediag1, ".png", sep = "")
+    },
+    content = function(file)  {
+      ggsave(file,
+            DimPlot(ATACdataset,
+                    group.by = "celltype"))
+    }
+  )
+
   output$featPlotATAC <- renderPlot({
     FeaturePlot(ATACdataset,
                 features = input$genediag2)
   })
+
+  output$featPlotATACDownload <- downloadHandler(
+    filename = function() {
+      paste("FeatPlotATAC", input$genediag1, ".png", sep = "")
+    },
+    content = function(file)  {
+      ggsave(file,
+            FeaturePlot(ATACdataset,
+                        features = input$genediag2))
+    }
+  )
 
   output$dimPlotATACCtrl <- renderPlot({
     FeaturePlot(ATACdataset,
                 features = input$genediag2,
                 split.by = "diagnosis")
   })
+
+  output$dimPlotATACCtrlDownload <- downloadHandler(
+    filename = function() {
+      paste("FeatPlotDiagnoses", input$genediag1, ".png", sep = "")
+    },
+    content = function(file)  {
+      ggsave(file,
+            FeaturePlot(ATACdataset,
+                        features = input$genediag2,
+                        split.by = "diagnosis"))
+    }
+  )
 
   output$coverage_plot <- renderPlot({
     validate(
@@ -90,6 +160,22 @@ shinyServer(function(input, output, session) {
                       title = element_text(size = 15))
   })
 
+  output$coverage_plotDownload <- downloadHandler(
+    filename = function() {
+      paste("FeatPlotDiagnoses", input$genediag1, ".png", sep = "")
+    },
+    content = function(file)  {
+      ggsave(file,
+            CoveragePlot(ATACdataset,
+                        region = input$genediag3,
+                        idents = c(currentGeneDiag3()[[1]],
+                                   currentGeneDiag3()[[2]])
+                        ) &
+                        theme(strip.text.y = element_text(size = 10),
+                          title = element_text(size = 15)))
+    }
+  )
+
   output$violin1 <- renderPlot({
     validate(
       need(input$genediag3, ""),
@@ -103,6 +189,21 @@ shinyServer(function(input, output, session) {
     ) &
     theme(axis.title.x = element_blank(),
           legend.position = "none")
+  })
+
+  output$violin1Download <- downloadHandler(
+    filename = function() {
+      paste("VlnPlot", input$genediag3, "_", input$celltype3, ".png", sep = "")
+    },
+    content = function(file)  {
+      ggsave(file,
+            VlnPlot(dataset,
+                    features = input$genediag3,
+                    idents = currentGeneDiag3()[[1]],
+                    pt.size = 0
+                  ) &
+      theme(axis.title.x = element_blank(),
+            legend.position = "none"))
   })
 
   output$violin2 <- renderPlot({
@@ -120,6 +221,21 @@ shinyServer(function(input, output, session) {
           legend.position = "none")
   })
 
+output$violin2Download <- downloadHandler(
+    filename = function() {
+      paste("VlnPlot", input$genediag3, "_", input$celltype3, "2", ".png", sep = "")
+    },
+    content = function(file)  {
+      ggsave(file,
+            VlnPlot(dataset,
+                    features = input$genediag3,
+                    idents = currentGeneDiag3()[[2]],
+                    pt.size = 0
+                  ) &
+      theme(axis.title.x = element_blank(),
+            legend.position = "none"))
+  })
+
   output$features_graph <- renderPlot({
     validate(
       need(input$feats, "No features selected")
@@ -132,6 +248,20 @@ shinyServer(function(input, output, session) {
     theme(axis.title.x = element_blank())
   })
 
+output$features_graphDownload <- downloadHandler(
+    filename = function() {
+      paste("FeaturesGraph", ".png", sep = "")
+    },
+    content = function(file)  {
+      ggsave(file,
+             VlnPlot(dataset,
+                    features = input$feats,
+                    pt.size = 0,
+                    ncol = 2,
+                    group.by = "celltype") &
+            theme(axis.title.x = element_blank()))
+  })
+
   output$features_graphATAC  <- renderPlot({
     validate(
       need(input$featsATAC, "No features selected")
@@ -139,5 +269,16 @@ shinyServer(function(input, output, session) {
     FragmentHistogram(ATACdataset,
       group.by = "nucleosome_group") &
     theme(axis.title.x = element_blank())
+  })
+
+  output$features_graphATACDownload <- downloadHandler(
+    filename = function() {
+      paste("FeaturesGraphATAC", ".png", sep = "")
+    },
+    content = function(file)  {
+      ggsave(file,
+            FragmentHistogram(ATACdataset,
+                              group.by = "nucleosome_group") &
+            theme(axis.title.x = element_blank()))
   })
 })
