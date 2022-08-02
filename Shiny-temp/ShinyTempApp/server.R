@@ -87,11 +87,12 @@ shinyServer(function(input, output, session) {
     filename = function() {
       paste("FeatPlotDiagnoses", input$genediag1, ".png", sep = "")
     },
-    content = function(file)  {
+    content = function(file) {
       ggsave(file,
             FeaturePlot(dataset,
                         features = input$genediag1,
-                        split.by = "diagnosis"))
+                        split.by = "diagnosis"),
+            width = 30)
     }
   )
 
@@ -104,7 +105,7 @@ shinyServer(function(input, output, session) {
     filename = function() {
       paste("DimPlotATAC", input$genediag1, ".png", sep = "")
     },
-    content = function(file)  {
+    content = function(file) {
       ggsave(file,
             DimPlot(ATACdataset,
                     group.by = "celltype"))
@@ -120,7 +121,7 @@ shinyServer(function(input, output, session) {
     filename = function() {
       paste("FeatPlotATAC", input$genediag1, ".png", sep = "")
     },
-    content = function(file)  {
+    content = function(file) {
       ggsave(file,
             FeaturePlot(ATACdataset,
                         features = input$genediag2))
@@ -137,11 +138,12 @@ shinyServer(function(input, output, session) {
     filename = function() {
       paste("FeatPlotDiagnoses", input$genediag1, ".png", sep = "")
     },
-    content = function(file)  {
+    content = function(file) {
       ggsave(file,
             FeaturePlot(ATACdataset,
                         features = input$genediag2,
-                        split.by = "diagnosis"))
+                        split.by = "diagnosis"),
+              width = 30)
     }
   )
 
@@ -164,7 +166,7 @@ shinyServer(function(input, output, session) {
     filename = function() {
       paste("FeatPlotDiagnoses", input$genediag1, ".png", sep = "")
     },
-    content = function(file)  {
+    content = function(file) {
       ggsave(file,
             CoveragePlot(ATACdataset,
                         region = input$genediag3,
@@ -172,7 +174,9 @@ shinyServer(function(input, output, session) {
                                    currentGeneDiag3()[[2]])
                         ) &
                         theme(strip.text.y = element_text(size = 10),
-                          title = element_text(size = 15)))
+                          title = element_text(size = 15)),
+            width = 10,
+            height = 15)
     }
   )
 
@@ -195,7 +199,7 @@ shinyServer(function(input, output, session) {
     filename = function() {
       paste("VlnPlot", input$genediag3, "_", input$celltype3, ".png", sep = "")
     },
-    content = function(file)  {
+    content = function(file) {
       ggsave(file,
             VlnPlot(dataset,
                     features = input$genediag3,
@@ -225,7 +229,7 @@ output$violin2Download <- downloadHandler(
     filename = function() {
       paste("VlnPlot", input$genediag3, "_", input$celltype3, "2", ".png", sep = "")
     },
-    content = function(file)  {
+    content = function(file) {
       ggsave(file,
             VlnPlot(dataset,
                     features = input$genediag3,
@@ -252,7 +256,7 @@ output$features_graphDownload <- downloadHandler(
     filename = function() {
       paste("FeaturesGraph", ".png", sep = "")
     },
-    content = function(file)  {
+    content = function(file) {
       ggsave(file,
              VlnPlot(dataset,
                     features = input$feats,
@@ -275,7 +279,7 @@ output$features_graphDownload <- downloadHandler(
     filename = function() {
       paste("FeaturesGraphATAC", ".png", sep = "")
     },
-    content = function(file)  {
+    content = function(file) {
       ggsave(file,
             FragmentHistogram(ATACdataset,
                               group.by = "nucleosome_group") &
