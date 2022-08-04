@@ -164,7 +164,7 @@ shinyServer(function(input, output, session) {
 
   output$coverage_plotDownload <- downloadHandler(
     filename = function() {
-      paste("FeatPlotDiagnoses", input$genediag1, ".png", sep = "")
+      paste("CoveragePlot", input$genediag1, ".png", sep = "")
     },
     content = function(file) {
       ggsave(file,
