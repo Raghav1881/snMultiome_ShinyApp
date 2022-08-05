@@ -225,7 +225,7 @@ shinyServer(function(input, output, session) {
           legend.position = "none")
   })
 
-output$violin2Download <- downloadHandler(
+  output$violin2Download <- downloadHandler(
     filename = function() {
       paste("VlnPlot", input$genediag3, "_", input$celltype3, "2", ".png", sep = "")
     },
