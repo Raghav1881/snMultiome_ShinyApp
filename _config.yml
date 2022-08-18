@@ -1,1 +1,3 @@
 theme: jekyll-theme-slate
+title: snRNA/snATAC-seq Analysis of ALS/FTLD Affected Orbitofrontal Cortices 
+description: R-Shiny based web app to display single nucleus data using the Seurat/Signac packages
