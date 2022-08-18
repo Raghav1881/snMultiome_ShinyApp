@@ -1,2 +1,2 @@
 # LMP-RShiny-App
-Hosting single cell data on a RShiny page
+Hosting single nucleus human ALS/FTLD orbitofrontal cortex data on a RShiny web application
