@@ -11,3 +11,11 @@ output/pbmc_tutorial
 ShinyApp/app.R
 ShinyApp/app.R
 RNA-seq-app/30k_snRNA.RDS
+output/.RData
+output/.Rhistory
+*.RDS
+*.gz
+*.tbi
+RNA-seq-app/load_ATAC.R
+*.RDataTmp
+*.RDataTmp1

@@ -1,7 +1,3 @@
-library(shiny)
-library(Seurat)
-library(ggplot2)
-
 geneList <- rownames(dataset)
 geneListATAC <- rownames(ATACdataset@assays$RNA)
 diagnosisList <- levels(dataset@meta.data[["diagnosis"]])

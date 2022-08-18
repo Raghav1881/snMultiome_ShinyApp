@@ -1,9 +1,3 @@
-library(Seurat)
-library(Signac)
-library(shinyWidgets)
-library(shiny)
-library(bslib)
-
 # Initialize and hard code some variables (Don't want to pull all the data from Seurat objects)
 mtheme <- bs_theme(version = 5, bootswatch = "materia")
 feature_list <- c("nCount_RNA", "nCount_SCT", "nFeature_RNA",
@@ -183,7 +177,7 @@ ui <- fluidPage(theme = mtheme,
             tags$figure(
               align = "center",
               tags$img(
-                src = "~/Documents/GitHub/LMP-RShiny-App/Shiny-temp/ShinyTempApp/data/Affiliations.png",
+                src = "Affiliations.png",
                 width = "100%"
               ))
           ),
