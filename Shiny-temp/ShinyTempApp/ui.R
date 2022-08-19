@@ -168,11 +168,10 @@ ui <- fluidPage(theme = mtheme,
         fluidRow(
           column(6,
             h1("Acknowledgements"),
-            box(
             tags$img(
               src = "Affiliations.png",
               width = "100%"
-            ))
+            )
           ),
           column(
             6,
