@@ -1,9 +1,3 @@
-# Initialize and hard code some variables (Don't want to pull all the data from Seurat objects)
-mtheme <- bs_theme(version = 5, bootswatch = "materia")
-feature_list <- c("nCount_RNA", "nCount_SCT", "nFeature_RNA",
-                  "nFeature_SCT", "percent.mt", "percent.rpl", "percent.rps")
-feature_listATAC <- c("nucleosome_group")
-
 # Initialize Shiny server
 ui <- fluidPage(theme = mtheme,
   titlePanel(
@@ -174,12 +168,11 @@ ui <- fluidPage(theme = mtheme,
         fluidRow(
           column(6,
             h1("Acknowledgements"),
-            tags$figure(
-              align = "center",
-              tags$img(
-                src = "Affiliations.png",
-                width = "100%"
-              ))
+            box(
+            tags$img(
+              src = "Affiliations.png",
+              width = "100%"
+            ))
           ),
           column(
             6,

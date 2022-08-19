@@ -1,7 +1,4 @@
-geneList <- rownames(dataset)
-geneListATAC <- rownames(ATACdataset@assays$RNA)
-diagnosisList <- levels(dataset@meta.data[["diagnosis"]])
-
+# Helper function to generate concatenated diagnosis_celltype list
 getGeneList <- function(diaglist, celllist) {
   lstAll <- list()
   temp <- c()
@@ -204,7 +201,8 @@ shinyServer(function(input, output, session) {
                   ) &
       theme(axis.title.x = element_blank(),
             legend.position = "none"))
-  })
+    }
+  )
 
   output$violin2 <- renderPlot({
     validate(
@@ -223,7 +221,8 @@ shinyServer(function(input, output, session) {
 
   output$violin2Download <- downloadHandler(
     filename = function() {
-      paste("VlnPlot", input$genediag3, "_", input$celltype3, "2", ".png", sep = "")
+      paste("VlnPlot", input$genediag3, "_",
+            input$celltype3, "2", ".png", sep = "")
     },
     content = function(file) {
       ggsave(file,
@@ -234,7 +233,8 @@ shinyServer(function(input, output, session) {
                   ) &
       theme(axis.title.x = element_blank(),
             legend.position = "none"))
-  })
+    }
+  )
 
   output$features_graph <- renderPlot({
     validate(
@@ -260,7 +260,8 @@ output$features_graphDownload <- downloadHandler(
                     ncol = 2,
                     group.by = "celltype") &
             theme(axis.title.x = element_blank()))
-  })
+    }
+  )
 
   output$features_graphATAC  <- renderPlot({
     validate(
@@ -280,5 +281,6 @@ output$features_graphDownload <- downloadHandler(
             FragmentHistogram(ATACdataset,
                               group.by = "nucleosome_group") &
             theme(axis.title.x = element_blank()))
-  })
+    }
+  )
 })
