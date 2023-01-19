@@ -4,6 +4,8 @@ if (!require("pacman")) {
   install.packages("pacman")
 }
 
+library(pacman)
+
 p_load("shiny", "Seurat", "Signac", "shinyWidgets",
        "bslib", "ggplot2")
 
@@ -16,3 +18,5 @@ mtheme <- bs_theme(version = 5, bootswatch = "materia")
 feature_list <- c("nCount_RNA", "nCount_SCT", "nFeature_RNA",
                   "nFeature_SCT", "percent.mt", "percent.rpl", "percent.rps")
 feature_listATAC <- c("nucleosome_group")
+idents <- c("sample", "sex", "celltype", "diagnosis",
+            "cellsubtype")

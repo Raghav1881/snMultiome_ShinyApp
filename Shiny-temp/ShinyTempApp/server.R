@@ -1,5 +1,5 @@
 # Helper function to generate concatenated diagnosis_celltype list
-getGeneList <- function(diaglist, celllist) {
+GetGeneList <- function(diaglist, celllist) {
   lstAll <- list()
   temp <- c()
   for (k in 1:(length(diaglist) + 1)) {
@@ -15,11 +15,16 @@ getGeneList <- function(diaglist, celllist) {
   return(lstAll)
 }
 
-shinyServer(function(input, output, session) {
+# Initialize shiny server
+function(input, output, session) {
   updateSelectizeInput(session, "genediag1",
                       choices = geneList,
                       server = TRUE,
                       selected = "C9orf72")
+  updateSelectizeInput(session, "subcat1",
+                      choices = idents,
+                      server = TRUE,
+                      selected = "celltype")
   updateSelectizeInput(session, "genediag2",
                       choices = geneListATAC,
                       server = TRUE,
@@ -32,13 +37,22 @@ shinyServer(function(input, output, session) {
                       choices = diagnosisList[-1],
                       server = TRUE)
 
-  currentGeneDiag1 <- reactive({getGeneList(input$diagchk1, input$celltype1)})
-  currentGeneDiag2 <- reactive({getGeneList(input$diagchk2, input$celltype2)})
-  currentGeneDiag3 <- reactive({getGeneList(input$diagchk3, input$celltype3)})
+  currentGeneDiag1 <- reactive({
+    GetGeneList(input$diagchk1,
+                input$celltype1)
+  })
+  currentGeneDiag2 <- reactive({
+    GetGeneList(input$diagchk2,
+                input$celltype2)
+  })
+  currentGeneDiag3 <- reactive({
+    GetGeneList(input$diagchk3,
+                input$celltype3)
+  })
 
   output$dimPlotRNA <- renderPlot({
     DimPlot(dataset,
-            group.by = "celltype")
+            group.by = input$subcat1)
   })
 
   output$dimPlotDownload <- downloadHandler(
@@ -48,7 +62,7 @@ shinyServer(function(input, output, session) {
     content = function(file)  {
       ggsave(file,
             DimPlot(dataset,
-                    group.by = "celltype"))
+                    group.by = input$subcat1))
     }
   )
 
@@ -283,4 +297,4 @@ output$features_graphDownload <- downloadHandler(
             theme(axis.title.x = element_blank()))
     }
   )
-})
+}
