@@ -20,7 +20,7 @@ ui <- fluidPage(theme = mtheme,
               h1("Dimensional plot and Feature Plot"),
               column(
                 6,
-                plotOutput("dimPlotRNA",),
+                plotOutput("dimPlotRNA"),
                 downloadButton("dimPlotDownload",
                                 label = "")),
               column(

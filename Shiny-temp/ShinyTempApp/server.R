@@ -1,6 +1,6 @@
 # Helper function to generate concatenated diagnosis_celltype list
-getGeneList <- function(diaglist, celllist) {
-  lstAll <- list()
+get_gene_list <- function(diaglist, celllist) {
+  list_all <- list()
   temp <- c()
   for (k in 1:(length(diaglist) + 1)) {
     for (l in 1:length(celllist)) {
@@ -10,9 +10,9 @@ getGeneList <- function(diaglist, celllist) {
         temp[l] <- paste(diaglist[k - 1], celllist[l], sep = "_")
       }
     }
-    lstAll[[k]] <- temp
+    list_all[[k]] <- temp
   }
-  return(lstAll)
+  return(list_all)
 }
 
 shinyServer(function(input, output, session) {
@@ -32,13 +32,23 @@ shinyServer(function(input, output, session) {
                       choices = diagnosisList[-1],
                       server = TRUE)
 
-  currentGeneDiag1 <- reactive({getGeneList(input$diagchk1, input$celltype1)})
-  currentGeneDiag2 <- reactive({getGeneList(input$diagchk2, input$celltype2)})
-  currentGeneDiag3 <- reactive({getGeneList(input$diagchk3, input$celltype3)})
+  currentGeneDiag1 <- reactive({
+                                get_gene_list(input$diagchk1,
+                                              input$celltype1)
+  })
+  currentGeneDiag2 <- reactive({
+                                get_gene_list(input$diagchk2,
+                                input$celltype2)
+  })
+  currentGeneDiag3 <- reactive({
+                                get_gene_list(input$diagchk3,
+                                              input$celltype3)
+  })
 
+  # Page 1 outputs start here
   output$dimPlotRNA <- renderPlot({
-    DimPlot(dataset,
-            group.by = "celltype")
+    DimPlot_scCustom(dataset,
+                     group.by = "celltype")
   })
 
   output$dimPlotDownload <- downloadHandler(
@@ -47,15 +57,15 @@ shinyServer(function(input, output, session) {
     },
     content = function(file)  {
       ggsave(file,
-            DimPlot(dataset,
-                    group.by = "celltype"))
+            DimPlot_scCustom(dataset,
+                            group.by = "celltype"))
     }
   )
 
   output$featPlotRNA <- renderPlot({
     req(input$genediag1)
-    FeaturePlot(dataset,
-                features = input$genediag1)
+    FeaturePlot_scCustom(dataset,
+                        features = input$genediag1)
   })
 
   output$featPlotRNADownload <- downloadHandler(
@@ -64,14 +74,14 @@ shinyServer(function(input, output, session) {
     },
     content = function(file)  {
       ggsave(file,
-            FeaturePlot(dataset,
-                        features = input$genediag1))
+            FeaturePlot_scCustom(dataset,
+                                features = input$genediag1))
     }
   )
 
   output$dimPlotRNACtrl <- renderPlot({
     req(input$genediag1)
-    FeaturePlot(dataset,
+    FeaturePlot_scCustom(dataset,
                 features = input$genediag1,
                 split.by = "diagnosis")
   })
@@ -82,16 +92,17 @@ shinyServer(function(input, output, session) {
     },
     content = function(file) {
       ggsave(file,
-            FeaturePlot(dataset,
-                        features = input$genediag1,
-                        split.by = "diagnosis"),
+            FeaturePlot_scCustom(dataset,
+                                features = input$genediag1,
+                                split.by = "diagnosis"),
             width = 30)
     }
   )
 
+  # Page 2 output starts here
   output$dimPlotATAC <- renderPlot({
-    DimPlot(ATACdataset,
-            group.by = "celltype")
+    DimPlot_scCustom(ATACdataset,
+                    group.by = "celltype")
   })
 
   output$dimPlotATACDownload <- downloadHandler(
@@ -100,31 +111,33 @@ shinyServer(function(input, output, session) {
     },
     content = function(file) {
       ggsave(file,
-            DimPlot(ATACdataset,
-                    group.by = "celltype"))
+            DimPlot_scCustom(ATACdataset,
+                            group.by = "celltype"))
     }
   )
 
   output$featPlotATAC <- renderPlot({
-    FeaturePlot(ATACdataset,
-                features = input$genediag2)
+    FeaturePlot_scCustom(ATACdataset,
+                        features = paste("rna_", input$genediag2, sep = ""))
   })
 
   output$featPlotATACDownload <- downloadHandler(
     filename = function() {
       paste("FeatPlotATAC", input$genediag1, ".png", sep = "")
     },
-    content = function(file) {
+    content = function(file)  {
       ggsave(file,
-            FeaturePlot(ATACdataset,
-                        features = input$genediag2))
+            FeaturePlot_scCustom(ATACdataset,
+                                features = paste("rna_",
+                                                  input$genediag2,
+                                                  sep = "")))
     }
   )
 
   output$dimPlotATACCtrl <- renderPlot({
-    FeaturePlot(ATACdataset,
-                features = input$genediag2,
-                split.by = "diagnosis")
+    FeaturePlot_scCustom(ATACdataset,
+                        features = paste("rna_", input$genediag2, sep = ""),
+                        split.by = "diagnosis")
   })
 
   output$dimPlotATACCtrlDownload <- downloadHandler(
@@ -133,13 +146,16 @@ shinyServer(function(input, output, session) {
     },
     content = function(file) {
       ggsave(file,
-            FeaturePlot(ATACdataset,
-                        features = input$genediag2,
-                        split.by = "diagnosis"),
+            FeaturePlot_scCustom(ATACdataset,
+                                features = paste("rna_",
+                                                  input$genediag2,
+                                                  sep = ""),
+                                split.by = "diagnosis"),
               width = 30)
     }
   )
 
+  # Page 3 output starts here
   output$coverage_plot <- renderPlot({
     validate(
       need(input$genediag3, "Please select a gene"),
@@ -179,10 +195,10 @@ shinyServer(function(input, output, session) {
       need(input$diagchk3, ""),
       need(input$celltype3, "")
     )
-    VlnPlot(dataset,
-      features = input$genediag3,
-      idents = currentGeneDiag3()[[1]],
-      pt.size = 0
+    VlnPlot_scCustom(dataset,
+                    features = input$genediag3,
+                    idents = currentGeneDiag3()[[1]],
+                    pt.size = 0
     ) &
     theme(axis.title.x = element_blank(),
           legend.position = "none")
@@ -194,11 +210,11 @@ shinyServer(function(input, output, session) {
     },
     content = function(file) {
       ggsave(file,
-            VlnPlot(dataset,
-                    features = input$genediag3,
-                    idents = currentGeneDiag3()[[1]],
-                    pt.size = 0
-                  ) &
+            VlnPlot_scCustom(dataset,
+                            features = input$genediag3,
+                            idents = currentGeneDiag3()[[1]],
+                            pt.size = 0
+            ) &
       theme(axis.title.x = element_blank(),
             legend.position = "none"))
     }
@@ -210,10 +226,10 @@ shinyServer(function(input, output, session) {
       need(input$diagchk3, ""),
       need(input$celltype3, "")
     )
-    VlnPlot(dataset,
-      features = input$genediag3,
-      idents = currentGeneDiag3()[[2]],
-      pt.size = 0
+    VlnPlot_scCustom(dataset,
+                    features = input$genediag3,
+                    idents = currentGeneDiag3()[[2]],
+                    pt.size = 0
     ) &
     theme(axis.title.x = element_blank(),
           legend.position = "none")
@@ -226,39 +242,41 @@ shinyServer(function(input, output, session) {
     },
     content = function(file) {
       ggsave(file,
-            VlnPlot(dataset,
-                    features = input$genediag3,
-                    idents = currentGeneDiag3()[[2]],
-                    pt.size = 0
+            VlnPlot_scCustom(dataset,
+                            features = input$genediag3,
+                            idents = currentGeneDiag3()[[2]],
+                            pt.size = 0
                   ) &
       theme(axis.title.x = element_blank(),
             legend.position = "none"))
     }
   )
 
+  # Page 4 output starts here
   output$features_graph <- renderPlot({
     validate(
       need(input$feats, "No features selected")
     )
-    VlnPlot(dataset,
-      features = input$feats,
-      pt.size = 0,
-      ncol = 2,
-      group.by = "celltype") &
-    theme(axis.title.x = element_blank())
+    VlnPlot_scCustom(dataset,
+                    features = input$feats,
+                    pt.size = 0,
+                    #ncol = 2,
+                    group.by = "celltype") &
+    theme(axis.title.x = element_blank()) + 
+    NoLegend()
   })
 
-output$features_graphDownload <- downloadHandler(
+  output$features_graphDownload <- downloadHandler(
     filename = function() {
       paste("FeaturesGraph", ".png", sep = "")
     },
     content = function(file) {
       ggsave(file,
-             VlnPlot(dataset,
-                    features = input$feats,
-                    pt.size = 0,
-                    ncol = 2,
-                    group.by = "celltype") &
+             VlnPlot_scCustom(dataset,
+                              features = input$feats,
+                              pt.size = 0,
+                              #ncol = 2,
+                              group.by = "celltype") &
             theme(axis.title.x = element_blank()))
     }
   )
