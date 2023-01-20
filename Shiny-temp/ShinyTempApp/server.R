@@ -21,7 +21,7 @@ function(input, output, session) {
                       choices = geneList,
                       server = TRUE,
                       selected = "C9orf72")
-  updateSelectizeInput(session, "subcat1",
+  updateSelectizeInput(session, "subcatRNA",
                       choices = idents,
                       server = TRUE,
                       selected = "celltype")
@@ -29,6 +29,10 @@ function(input, output, session) {
                       choices = geneListATAC,
                       server = TRUE,
                       selected = "C9orf72")
+  updateSelectizeInput(session, "subcatATAC",
+                      choices = idents,
+                      server = TRUE,
+                      selected = "celltype")
   updateSelectizeInput(session, "genediag3",
                       choices = geneListATAC,
                       server = TRUE,
@@ -51,8 +55,9 @@ function(input, output, session) {
   })
 
   output$dimPlotRNA <- renderPlot({
+    req(input$genediag1)
     DimPlot(dataset,
-            group.by = input$subcat1)
+            group.by = input$subcatRNA)
   })
 
   output$dimPlotDownload <- downloadHandler(
@@ -62,7 +67,7 @@ function(input, output, session) {
     content = function(file)  {
       ggsave(file,
             DimPlot(dataset,
-                    group.by = input$subcat1))
+                    group.by = input$subcatRNA))
     }
   )
 
@@ -104,8 +109,9 @@ function(input, output, session) {
   )
 
   output$dimPlotATAC <- renderPlot({
+    req(input$genediag2)
     DimPlot(ATACdataset,
-            group.by = "celltype")
+            group.by = input$subcatATAC)
   })
 
   output$dimPlotATACDownload <- downloadHandler(
@@ -115,7 +121,7 @@ function(input, output, session) {
     content = function(file) {
       ggsave(file,
             DimPlot(ATACdataset,
-                    group.by = "celltype"))
+                    group.by = input$subcatATAC))
     }
   )
 
