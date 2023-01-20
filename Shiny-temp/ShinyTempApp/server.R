@@ -1,6 +1,14 @@
 # Helper function to generate concatenated diagnosis_celltype list
+### Vectorized version of GetGeneList haven't tested yet prob won't work
+# GetGeneList <- function(diaglist, celllist) {
+#   lst_all <- lapply(1:(length(diaglist) + 1), function(k) {
+#     paste(if (k == 1) "control" else diaglist[k - 1], celllist, sep = "_")
+#   })
+#   return(lst_all)
+# }
+
 GetGeneList <- function(diaglist, celllist) {
-  lstAll <- list()
+  lst_all <- list()
   temp <- c()
   for (k in 1:(length(diaglist) + 1)) {
     for (l in 1:length(celllist)) {
@@ -10,9 +18,9 @@ GetGeneList <- function(diaglist, celllist) {
         temp[l] <- paste(diaglist[k - 1], celllist[l], sep = "_")
       }
     }
-    lstAll[[k]] <- temp
+    lst_all[[k]] <- temp
   }
-  return(lstAll)
+  return(lst_all)
 }
 
 # Initialize shiny server
@@ -44,21 +52,28 @@ function(input, output, session) {
   currentGeneDiag1 <- reactive({
     GetGeneList(input$diagchk1,
                 input$celltype1)
-  })
+  }) %>%
+  bindCache(input$diagchk1, input$celltype1)
+
   currentGeneDiag2 <- reactive({
     GetGeneList(input$diagchk2,
                 input$celltype2)
-  })
+  }) %>%
+  bindCache(input$diagchk2, input$celltype2)
+
   currentGeneDiag3 <- reactive({
     GetGeneList(input$diagchk3,
                 input$celltype3)
-  })
+  }) %>%
+  bindCache(input$diagchk3, input$celltype3)
 
+  # Page 1 output begins here
   output$dimPlotRNA <- renderPlot({
-    req(input$genediag1)
+    req(input$subcatRNA)
     DimPlot(dataset,
             group.by = input$subcatRNA)
-  })
+  }) %>%
+  bindCache(input$subcatRNA)
 
   output$dimPlotDownload <- downloadHandler(
     filename = function() {
@@ -75,7 +90,8 @@ function(input, output, session) {
     req(input$genediag1)
     FeaturePlot(dataset,
                 features = input$genediag1)
-  })
+  }) %>%
+  bindCache(input$genediag1)
 
   output$featPlotRNADownload <- downloadHandler(
     filename = function() {
@@ -93,7 +109,8 @@ function(input, output, session) {
     FeaturePlot(dataset,
                 features = input$genediag1,
                 split.by = "diagnosis")
-  })
+  }) %>%
+  bindCache(input$genediag1)
 
   output$dimPlotRNACtrlDownload <- downloadHandler(
     filename = function() {
@@ -108,11 +125,13 @@ function(input, output, session) {
     }
   )
 
+  # Page 2 output begins here
   output$dimPlotATAC <- renderPlot({
-    req(input$genediag2)
+    req(input$subcatATAC)
     DimPlot(ATACdataset,
             group.by = input$subcatATAC)
-  })
+  }) %>%
+  bindCache(input$subcatATAC)
 
   output$dimPlotATACDownload <- downloadHandler(
     filename = function() {
@@ -128,7 +147,8 @@ function(input, output, session) {
   output$featPlotATAC <- renderPlot({
     FeaturePlot(ATACdataset,
                 features = input$genediag2)
-  })
+  }) %>%
+  bindCache(input$genediag2)
 
   output$featPlotATACDownload <- downloadHandler(
     filename = function() {
@@ -145,7 +165,8 @@ function(input, output, session) {
     FeaturePlot(ATACdataset,
                 features = input$genediag2,
                 split.by = "diagnosis")
-  })
+  }) %>%
+  bindCache(input$genediag2)
 
   output$dimPlotATACCtrlDownload <- downloadHandler(
     filename = function() {
@@ -160,6 +181,7 @@ function(input, output, session) {
     }
   )
 
+  # Page 3 output begins here
   output$coverage_plot <- renderPlot({
     validate(
       need(input$genediag3, "Please select a gene"),
@@ -256,6 +278,7 @@ function(input, output, session) {
     }
   )
 
+  # Page 4 output begins here
   output$features_graph <- renderPlot({
     validate(
       need(input$feats, "No features selected")
@@ -266,7 +289,8 @@ function(input, output, session) {
       ncol = 2,
       group.by = "celltype") &
     theme(axis.title.x = element_blank())
-  })
+  }) %>%
+  bindCache(input$feats)
 
 output$features_graphDownload <- downloadHandler(
     filename = function() {
@@ -290,7 +314,8 @@ output$features_graphDownload <- downloadHandler(
     FragmentHistogram(ATACdataset,
       group.by = "nucleosome_group") &
     theme(axis.title.x = element_blank())
-  })
+  }) %>%
+  bindCache(input$featsATAC)
 
   output$features_graphATACDownload <- downloadHandler(
     filename = function() {

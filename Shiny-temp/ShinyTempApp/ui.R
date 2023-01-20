@@ -176,7 +176,7 @@ ui <- fluidPage(theme = mtheme,
             h1("Acknowledgements"),
             tags$img(
               src = "Affiliations.png",
-              width = "100%"
+              width = "80%"
             )
           ),
           column(
