@@ -108,7 +108,7 @@ ui <- fluidPage(theme = mtheme,
               hr()),
             # Plot violin plots for each diagnosis
             fluidRow(
-              h1("Violin Plots"),
+              h1("Violin Plots - RNA"),
               column(
                 6,
                 # Violin plot for control_celltype

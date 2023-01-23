@@ -52,20 +52,17 @@ function(input, output, session) {
   currentGeneDiag1 <- reactive({
     GetGeneList(input$diagchk1,
                 input$celltype1)
-  }) %>%
-  bindCache(input$diagchk1, input$celltype1)
+  })
 
   currentGeneDiag2 <- reactive({
     GetGeneList(input$diagchk2,
                 input$celltype2)
-  }) %>%
-  bindCache(input$diagchk2, input$celltype2)
+  })
 
   currentGeneDiag3 <- reactive({
     GetGeneList(input$diagchk3,
                 input$celltype3)
-  }) %>%
-  bindCache(input$diagchk3, input$celltype3)
+  })
 
   # Page 1 output begins here
   output$dimPlotRNA <- renderPlot({
@@ -195,7 +192,8 @@ function(input, output, session) {
                 ) &
                 theme(strip.text.y = element_text(size = 10),
                       title = element_text(size = 15))
-  })
+  }) %>%
+  bindCache(input$genediag3, input$diagchk3, input$celltype3)
 
   output$coverage_plotDownload <- downloadHandler(
     filename = function() {
