@@ -1,26 +1,9 @@
 # Helper function to generate concatenated diagnosis_celltype list
-### Vectorized version of GetGeneList haven't tested yet prob won't work
-# GetGeneList <- function(diaglist, celllist) {
-#   lst_all <- lapply(1:(length(diaglist) + 1), function(k) {
-#     paste(if (k == 1) "control" else diaglist[k - 1], celllist, sep = "_")
-#   })
-#   return(lst_all)
-# }
-
 GetGeneList <- function(diaglist, celllist) {
-  lst_all <- list()
-  temp <- c()
-  for (k in 1:(length(diaglist) + 1)) {
-    for (l in 1:length(celllist)) {
-      if (k == 1) {
-        temp[l] <- paste("control", celllist[l], sep = "_")
-      } else {
-        temp[l] <- paste(diaglist[k - 1], celllist[l], sep = "_")
-      }
-    }
-    lst_all[[k]] <- temp
-  }
-  return(lst_all)
+   lst_all <- lapply(1:(length(diaglist) + 1), function(k) {
+     paste(if (k == 1) "control" else diaglist[k - 1], celllist, sep = "_")
+   })
+   return(lst_all)
 }
 
 # Initialize shiny server
