@@ -10,54 +10,7 @@ ui <- fluidPage(theme = mtheme,
       # Create tab panel for UMAP-ATAC
       atacUI("atac"),
       # Create tab panel for Coverage and Violin plots
-      tabPanel("Coverage/Violin Plots",
-        HTML("Diagnosis and Gene Expression Analysis"),
-        sidebarLayout(
-          sidebarPanel(
-            width = 3,
-            selectizeInput("genediag3", "Select gene",
-                            choices = NULL),
-            selectizeInput("diagchk3", "Select diagnosis",
-                            choices = NULL),
-            prettyCheckboxGroup("celltype3", "Select cell types",
-                                levels(dataset$celltype),
-                                selected = "Oligodendrocytes",
-                                icon = icon("check-square"),
-                                status = "primary",
-                                outline = FALSE,
-                                animation = "smooth")),
-          mainPanel(
-            # Plot coverage plot for all diagnoses/celltypes
-            width = 9,
-            h1("Coverage Plot"),
-            fluidRow(
-              plotOutput("coverage_plot",
-                          height = "65vh")),
-            fluidRow(
-              column(
-                6,
-                downloadButton("coverage_plotDownload",
-                              label = "")),
-              hr()),
-            # Plot violin plots for each diagnosis
-            fluidRow(
-              h1("Violin Plots"),
-              column(
-                6,
-                # Violin plot for control_celltype
-                plotOutput("violin1",
-                            height = "40vh"),
-                downloadButton("violin1Download",
-                                label = "")),
-              column(
-                6,
-                # Violin plot for diagnosis_celltype
-                plotOutput("violin2",
-                            height = "40vh"),
-                downloadButton("violin2Download",
-                                label = "")))
-            )
-        )),
+      coverageUI("coverage"),
       # Create tab panel for Quality Control
       tabPanel("Quality Control",
         HTML("Cell Quality Control Metrics"),
