@@ -1,6 +1,5 @@
 # global.R file used to load common datasets shared across all sessions
 #setwd("~/Documents/GitHub/LMP-RShiny-App/Shiny-temp/ShinyTempApp/data/")
-setwd("C:\\Users\\Anil Sharma\\Documents\\GitHub\\LMP-RShiny-App")
 if (!require("pacman")) {
   install.packages("pacman")
 }
